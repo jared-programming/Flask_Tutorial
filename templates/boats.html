@@ -67,7 +67,9 @@
         </div>
 
         <div class="pagination_bar">
-            <a href= "{{ "/boats/"+ (page - 1) | string }}" class="pagination_button"> < </a>
+            {% if page > 1 %}
+                <a href= "{{ "/boats/"+ (page - 1) | string }}" class="pagination_button"> < </a>
+            {% endif %}
             <a class="pagination_button" style="background-color: black"> {{page}} </a>
             <a href="{{ "/boats/"+ (page + 1) | string }}" class="pagination_button" > {{ page + 1 }} </a>
             <a href="{{ "/boats/"+ (page + 2) | string }}" class="pagination_button"> {{ page + 2 }} </a>
