@@ -25,15 +25,57 @@ def user(name):
 @app.route('/boats/')
 @app.route('/boats/<page>')
 def get_boats(page=1):
-    page = int(page)  # request params always come as strings. So type conversion is necessary.
+    page = int(request.args.get('page', page))  # allow page in query
     if page < 1:
         page = 1
     per_page = 15  # records to show per page
-    total = conn.execute(text("SELECT COUNT(*) FROM boats")).scalar()
-    total_pages = math.ceil(total / per_page)
-    boats = conn.execute(text(f"SELECT * FROM boats LIMIT {per_page} OFFSET {(page - 1) * per_page}")).all()
+    
+    # Get filters
+    q = request.args.get('q')
+    type_filter = request.args.get('type')
+    min_price = request.args.get('min_price')
+    max_price = request.args.get('max_price')
+    sort = request.args.get('sort', 'id')
+    
+    # Validate sort parameter
+    valid_sorts = {'id': 'id', 'name': 'name', 'price': 'rental_price', 'owner_id': 'owner_id'}
+    sort_column = valid_sorts.get(sort, 'id')
+    
+    # Get distinct types for dropdown
+    types_result = conn.execute(text("SELECT DISTINCT type FROM boats")).all()
+    types = [row[0] for row in types_result]
+    
+    # Build query
+    base_query = "SELECT * FROM boats"
+    count_query = "SELECT COUNT(*) FROM boats"
+    conditions = []
+    params = {}
+    
+    if q:
+        conditions.append("(LOWER(name) LIKE LOWER(:q) OR CAST(id AS CHAR) = :q_exact OR LOWER(type) LIKE LOWER(:q) OR CAST(owner_id AS CHAR) = :q_exact)")
+        params['q'] = f"%{q}%"
+        params['q_exact'] = q
+    if type_filter:
+        conditions.append("type = :type")
+        params['type'] = type_filter
+    if min_price:
+        conditions.append("rental_price >= :min_price")
+        params['min_price'] = float(min_price)
+    if max_price:
+        conditions.append("rental_price <= :max_price")
+        params['max_price'] = float(max_price)
+    
+    where_clause = " WHERE " + " AND ".join(conditions) if conditions else ""
+    order_clause = f" ORDER BY {sort_column}"
+    base_query += where_clause + order_clause
+    count_query += where_clause
+    
+    total = conn.execute(text(count_query), params).scalar()
+    total_pages = math.ceil(total / per_page) if total > 0 else 1
+    
+    boats = conn.execute(text(f"{base_query} LIMIT {per_page} OFFSET {(page - 1) * per_page}"), params).all()
     print(boats)
-    return render_template('boats.html', boats=boats, page=page, per_page=per_page, total_pages=total_pages)
+    return render_template('boats.html', boats=boats, page=page, per_page=per_page, total_pages=total_pages, q=q, type=type_filter, min_price=min_price, max_price=max_price, types=types, sort=sort)
 
 
 @app.route('/create', methods=['GET'])

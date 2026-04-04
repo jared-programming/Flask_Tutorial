@@ -2,6 +2,7 @@
 <html lang="en" dir="ltr">
   <head>
     <meta charset="utf-8">
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;700&display=swap" rel="stylesheet">
     <link rel= "stylesheet" type= "text/css" href= "{{ url_for('static',filename='styles/header.css') }}">
     <title>My site</title>
   </head>
@@ -9,8 +10,8 @@
   <body>
     <header>
       <div class="topBar">
-        <div class="">
-          <img src="{{url_for('static',filename = 'images/logo.jpg')}}" alt="Logo" class="logo">
+        <div class="leftSection">
+          <img src="{{url_for('static',filename = 'images/logo.png')}}" alt="Logo" class="logo">
           <ul class="barItem">
 
             <li><a href="/">HOME</a></li>
@@ -20,7 +21,14 @@
           </ul>
         </div>
 
-        <div class="formSection barItem">
+        <div class="centerSection">
+          <form action="/boats" method="GET" class="searchForm">
+            <input type="text" name="q" placeholder="Search boats..." class="input">
+            <input type="submit" value="Search" class="input">
+          </form>
+        </div>
+
+        <div class="rightSection">
           <form class="barItem" action="" method="post">
             <input type="text" name="uid" value="" placeholder="E-mail" required>
             <input type="password" name="pass" value="" placeholder="Password" required>
@@ -40,12 +48,13 @@
     
     <footer class="footer">
       <div class="footer__addr">
-        <h1 class="footer__logo">A very cool looking footer!</h1>
+        <h1 class="footer__logo">A CSET-160 Project!</h1>
 
         <h2>Contact</h2>
+        <h3>Jared "The Unc" S.</h3>
 
         <address>
-          5534 Somewhere In. The World 22193-10212<br>
+          Any Beach, Anywhere 67420-42069<br>
 
           <a class="footer__btn" href="mailto:example@gmail.com">Email Us</a>
         </address>
@@ -120,10 +129,10 @@
       </ul>
 
       <div class="legal">
-        <p>&copy; 2019 Something. All rights reserved.</p>
+        <p>&copy; 2026 AncientOneLtd. Maybe rights reserved?</p>
 
         <div class="legal__links">
-          <span>Made with <span class="heart">♥</span> remotely from Anywhere</span>
+          <span>Made with love<span class="heart">♥</span></span>
         </div>
       </div>
     </footer>

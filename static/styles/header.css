@@ -1,43 +1,87 @@
 .barItem{
-  display: inline-block;
+  display: flex;
+  gap: 16px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  align-items: center;
 }
 
 .logo {
-  width: 45px;
+  width: 50px;
+  height: auto;
+  scale: 1.75;
 }
 
 header li {
-  float: left;
-  display: block;
-  padding-left: 8px;
-  padding-right: 8px;
+  float: none;
+  display: inline-block;
+  padding-left: 10px;
+  padding-right: 10px;
 }
 
 .topBar{
-  background-color: #E3F2FD; /* Light blue */
+  background: linear-gradient(135deg, #FFD1DC 0%, #E6E6FA 45%, #A0E7FF 100%);
   display:flex;
   justify-content: space-between;
   align-items:center;
-  padding: 10px;
+  padding: 16px 24px;
+  gap: 20px;
 }
 
-.formSection {
-  padding: 10px;
-  right: 0;
+.leftSection {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  flex: 0 1 auto;
+}
+
+.centerSection {
+  flex: 1 1 auto;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.rightSection {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 10px;
+  flex: 0 1 auto;
+}
+
+.rightSection form {
+  display: flex;
+  align-items: center;
+  gap: 10px;
 }
 
 .input, .barItem input{
-  height: 35px;
+  height: 38px;
   border: none;
-  border-radius: 5px;
-  margin-left: 10px;
-  background-color: #FFFFFF;
+  border-radius: 999px;
+  background-color: #ffffffcc;
+  padding: 0 14px;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.06);
+}
+
+.input[type="submit"] {
+  background-color: #ff8da1;
+  color: white;
+  font-weight: 700;
+  cursor: pointer;
+  transition: transform 0.2s ease, background-color 0.2s ease;
+}
+
+.input[type="submit"]:hover {
+  background-color: #ff6b8c;
+  transform: translateY(-1px);
 }
 
 .mainDiv {
   margin: auto;
   width: 30%;
-
 }
 
 h1{
@@ -46,7 +90,17 @@ h1{
 
 header a{
   text-decoration:none;
-  color: #1976D2; /* Blue */
+  color: #8A2BE2; /* Vibrant purple */
+  font-weight: 600;
+}
+
+.searchForm {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  width: 100%;
+  padding-left: 7.5%;
+  max-width: 420px;
 }
 
 /* FOOTER */
@@ -60,12 +114,12 @@ html {
 }
 
 body {
-  font-family: acumin-pro, system-ui, sans-serif;
+  font-family: 'Nunito', sans-serif;
   margin: 0;
   display: grid;
   grid-template-rows: auto 1fr auto;
   font-size: 14px;
-  background-color: #FFF8E1; /* Light cream */
+  background: radial-gradient(circle at top left, #FFF0F5, #F8E2FF 30%, #E0F7FF 100%);
   align-items: start;
   min-height: 100vh;
 }
@@ -75,8 +129,8 @@ body {
   flex-flow: row wrap;
   padding: 30px 30px 20px 30px;
   color: #2f2f2f;
-  background-color: #F1F8E9; /* Light green */
-  border-top: 1px solid #e5e5e5;
+  background: linear-gradient(135deg, #D6EEFF, #FDE8F0);
+  border-top: 1px solid rgba(255, 105, 135, 0.3);
 }
 
 .footer > * {

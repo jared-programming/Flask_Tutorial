@@ -10,10 +10,11 @@
 
     .boat {
         min-width: 200px;
-        padding: 10px;
-        background-color: #FFFFFF;
-        border-radius: 8px;
-        box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+        padding: 0;
+        background-color: rgba(73, 50, 202, 0.18);
+        border: 1px solid rgba(255, 141, 161, 0.35);
+        border-radius: 12px;
+        box-shadow: 0 8px 18px rgba(255, 141, 161, 0.16);
         height: 140px;
     }
 
@@ -22,12 +23,13 @@
         justify-content: flex-end;
         width: 1140px;
         margin: auto;
+        margin-bottom: 30px;
     }
     .pagination_button {
         font-size: 20px;
-        background-color: #B2DFDB; /* Pastel teal */
+        background-color: #DDA0DD; /* Plum (lavender) */
         border: none;
-        color: #004D40; /* Dark teal */
+        color: #4B0082; /* Indigo */
         padding: 2px 2px 4px;
         text-align: center;
         text-decoration: none;
@@ -44,13 +46,124 @@
         padding-top: 20px;
         align-items: center;
     }
+
+    .filterForm {
+        display: flex;
+        gap: 10px;
+        flex-wrap: wrap;
+        margin-bottom: 10px;
+        justify-content: center;
+    }
+
+    .filterForm label {
+        display: flex;
+        flex-direction: column;
+        font-size: 14px;
+    }
+
+    .filterForm select {
+        padding: 10px 14px;
+        border: 2px solid rgba(221, 160, 221, 0.4);
+        border-radius: 20px;
+        font-size: 14px;
+        font-family: 'Nunito', sans-serif;
+        background-color: rgba(255, 255, 255, 0.85);
+        cursor: pointer;
+        transition: all 0.3s ease;
+        box-shadow: 0 4px 12px rgba(255, 141, 161, 0.12);
+    }
+
+    .filterForm select:hover {
+        border-color: rgba(221, 160, 221, 0.7);
+        box-shadow: 0 6px 16px rgba(255, 141, 161, 0.18);
+    }
+
+    .filterForm select:focus {
+        outline: none;
+        border-color: #DDA0DD;
+        box-shadow: 0 6px 16px rgba(221, 160, 221, 0.3);
+    }
+
+    .dual-slider {
+        position: relative;
+        width: 200px;
+        height: 20px;
+        margin-top: 5px;
+    }
+
+    .dual-slider input {
+        position: absolute;
+        width: 100%;
+        height: 20px;
+        -webkit-appearance: none;
+        background: transparent;
+        pointer-events: none;
+        z-index: 1;
+    }
+
+    .dual-slider input::-webkit-slider-thumb {
+        pointer-events: all;
+        height: 22px;
+        width: 22px;
+        background: linear-gradient(135deg, #DDA0DD, #E6B8E6);
+        border-radius: 50%;
+        cursor: pointer;
+        box-shadow: 0 4px 10px rgba(221, 160, 221, 0.4);
+        transition: all 0.2s ease;
+    }
+
+    .dual-slider input::-webkit-slider-thumb:hover {
+        box-shadow: 0 6px 14px rgba(221, 160, 221, 0.6);
+        transform: scale(1.1);
+    }
+
+    .slider-track {
+        position: absolute;
+        height: 6px;
+        background: rgba(221, 160, 221, 0.2);
+        top: 8px;
+        left: 10px;
+        right: 10px;
+        border-radius: 10px;
+        z-index: 0;
+    }
 </style>
 
 {% extends "base.html" %}
 {% block body %}
     {% set prev_page = page - 1 %}  <!-- variables in jinja --->
+    {% set query_params = [] %}
+    {% if q %}{% set query_params = query_params + ['q=' + q|urlencode] %}{% endif %}
+    {% if type %}{% set query_params = query_params + ['type=' + type|urlencode] %}{% endif %}
+    {% if min_price %}{% set query_params = query_params + ['min_price=' + min_price|urlencode] %}{% endif %}
+    {% if max_price %}{% set query_params = query_params + ['max_price=' + max_price|urlencode] %}{% endif %}
+    {% if sort %}{% set query_params = query_params + ['sort=' + sort|urlencode] %}{% endif %}
+    {% set query_string = query_params | join('&') %}
     <div class="column">
-        <h3>Page {{ page }}</h3>
+        <form method="GET" action="/boats" class="filterForm">
+            <label>Price Range: <span id="min_value">${{ min_price or 0 }}</span> - <span id="max_value">${{ max_price or 400 }}</span></label>
+            <div class="dual-slider">
+                <input type="range" id="min_price_input" name="min_price" min="0" max="400" step="10" value="{{ min_price or 0 }}" onchange="this.form.submit()">
+                <input type="range" id="max_price_input" name="max_price" min="0" max="400" step="10" value="{{ max_price or 400 }}" onchange="this.form.submit()">
+                <div class="slider-track"></div>
+            </div>
+            <label>Type: 
+                <select name="type" onchange="this.form.submit()">
+                    <option value="">All Types</option>
+                    {% for t in types %}
+                        <option value="{{ t }}" {% if type == t %}selected{% endif %}>{{ t }}</option>
+                    {% endfor %}
+                </select>
+            </label>
+            <label>Sort By:
+                <select name="sort" onchange="this.form.submit()">
+                    <option value="id" {% if sort == 'id' %}selected{% endif %}>ID</option>
+                    <option value="name" {% if sort == 'name' %}selected{% endif %}>Name</option>
+                    <option value="price" {% if sort == 'price' %}selected{% endif %}>Price</option>
+                    <option value="owner_id" {% if sort == 'owner_id' %}selected{% endif %}>Owner ID</option>
+                </select>
+            </label>
+        </form>
 
         <div class="flex-box">
             {% for boat in boats %}
@@ -75,28 +188,52 @@
         <div class="pagination_bar">
             {% set total_pages = total_pages | default(1) %}
             {% if page > 2 %}
-                <a href="/boats/{{ page - 2 }}" class="pagination_button"> << </a>
+                <a href="/boats/{{ page - 2 }}{% if query_string %}?{{ query_string }}{% endif %}" class="pagination_button"> << </a>
             {% endif %}
             {% if page > 1 %}
-                <a href="/boats/{{ page - 1 }}" class="pagination_button"> < </a>
+                <a href="/boats/{{ page - 1 }}{% if query_string %}?{{ query_string }}{% endif %}" class="pagination_button"> < </a>
             {% endif %}
             {% set start_page = [1, page - 1] | max %}
             {% set end_page = [total_pages, page + 1] | min %}
             {% for p in range(start_page, end_page + 1) %}
                 {% if p == page %}
-                    <a class="pagination_button" style="background-color: #FFF3E0; color: #E65100;">{{ p }}</a>
+                    <a class="pagination_button" style="background-color: #FFDAB9; color: #FF4500;">{{ p }}</a>
                 {% else %}
-                    <a href="/boats/{{ p }}" class="pagination_button">{{ p }}</a>
+                    <a href="/boats/{{ p }}{% if query_string %}?{{ query_string }}{% endif %}" class="pagination_button">{{ p }}</a>
                 {% endif %}
             {% endfor %}
             {% if page < total_pages %}
-                <a href="/boats/{{ page + 1 }}" class="pagination_button"> > </a>
+                <a href="/boats/{{ page + 1 }}{% if query_string %}?{{ query_string }}{% endif %}" class="pagination_button"> > </a>
             {% endif %}
             {% if page < total_pages - 1 %}
-                <a href="/boats/{{ page + 2 }}" class="pagination_button"> >> </a>
+                <a href="/boats/{{ page + 2 }}{% if query_string %}?{{ query_string }}{% endif %}" class="pagination_button"> >> </a>
             {% endif %}
         </div>
     </div>
 
+    <script>
+        const minInput = document.getElementById('min_price_input');
+        const maxInput = document.getElementById('max_price_input');
+        const minValue = document.getElementById('min_value');
+        const maxValue = document.getElementById('max_value');
+        const track = document.querySelector('.slider-track');
 
+        function updateSlider() {
+            const min = parseInt(minInput.value);
+            const max = parseInt(maxInput.value);
+            if (min > max) {
+                minInput.value = max;
+                maxInput.value = min;
+            }
+            minValue.textContent = '$' + minInput.value;
+            maxValue.textContent = '$' + maxInput.value;
+            const percent1 = (minInput.value / 400) * 100;
+            const percent2 = (maxInput.value / 400) * 100;
+            track.style.background = `linear-gradient(to right, #ddd 0%, #ddd ${percent1}%, #DDA0DD ${percent1}%, #DDA0DD ${percent2}%, #ddd ${percent2}%, #ddd 100%)`;
+        }
+
+        minInput.addEventListener('input', updateSlider);
+        maxInput.addEventListener('input', updateSlider);
+        updateSlider(); // initial
+    </script>
 {% endblock %}
