@@ -1,8 +1,9 @@
 from flask import Flask, render_template, request
 from sqlalchemy import Column, Integer, String, Numeric, create_engine, text
+import math
 
 app = Flask(__name__)
-conn_str = "mysql://root:cset155@localhost/boats"
+conn_str = "mysql://root:cset155@localhost/boatsdb"
 engine = create_engine(conn_str, echo=True)
 conn = engine.connect()
 
@@ -25,10 +26,14 @@ def user(name):
 @app.route('/boats/<page>')
 def get_boats(page=1):
     page = int(page)  # request params always come as strings. So type conversion is necessary.
-    per_page = 10  # records to show per page
+    if page < 1:
+        page = 1
+    per_page = 15  # records to show per page
+    total = conn.execute(text("SELECT COUNT(*) FROM boats")).scalar()
+    total_pages = math.ceil(total / per_page)
     boats = conn.execute(text(f"SELECT * FROM boats LIMIT {per_page} OFFSET {(page - 1) * per_page}")).all()
     print(boats)
-    return render_template('boats.html', boats=boats, page=page, per_page=per_page)
+    return render_template('boats.html', boats=boats, page=page, per_page=per_page, total_pages=total_pages)
 
 
 @app.route('/create', methods=['GET'])

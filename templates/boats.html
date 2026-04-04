@@ -1,15 +1,20 @@
 <style>
     .flex-box {
-        display: flex;
-        font-size: 16px;
-        flex-wrap: wrap;
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 20px;
         width: 1140px;
         margin: auto;
+        padding: 20px;
     }
 
     .boat {
         min-width: 200px;
         padding: 10px;
+        background-color: #FFFFFF;
+        border-radius: 8px;
+        box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+        height: 140px;
     }
 
     .pagination_bar {
@@ -20,14 +25,15 @@
     }
     .pagination_button {
         font-size: 20px;
-        background-color: #4CAF50; /* Green */
+        background-color: #B2DFDB; /* Pastel teal */
         border: none;
-        color: white;
+        color: #004D40; /* Dark teal */
         padding: 2px 2px 4px;
         text-align: center;
         text-decoration: none;
         display: inline-block;
         width: 30px;
+        border-radius: 8px;
     }
 
     .column {
@@ -67,14 +73,28 @@
         </div>
 
         <div class="pagination_bar">
-            {% if page > 1 %}
-                <a href= "{{ "/boats/"+ (page - 1) | string }}" class="pagination_button"> < </a>
+            {% set total_pages = total_pages | default(1) %}
+            {% if page > 2 %}
+                <a href="/boats/{{ page - 2 }}" class="pagination_button"> << </a>
             {% endif %}
-            <a class="pagination_button" style="background-color: black"> {{page}} </a>
-            <a href="{{ "/boats/"+ (page + 1) | string }}" class="pagination_button" > {{ page + 1 }} </a>
-            <a href="{{ "/boats/"+ (page + 2) | string }}" class="pagination_button"> {{ page + 2 }} </a>
-            <a href="{{ "/boats/"+ (page + 1) | string }}" class="pagination_button"> > </a>
-
+            {% if page > 1 %}
+                <a href="/boats/{{ page - 1 }}" class="pagination_button"> < </a>
+            {% endif %}
+            {% set start_page = [1, page - 1] | max %}
+            {% set end_page = [total_pages, page + 1] | min %}
+            {% for p in range(start_page, end_page + 1) %}
+                {% if p == page %}
+                    <a class="pagination_button" style="background-color: #FFF3E0; color: #E65100;">{{ p }}</a>
+                {% else %}
+                    <a href="/boats/{{ p }}" class="pagination_button">{{ p }}</a>
+                {% endif %}
+            {% endfor %}
+            {% if page < total_pages %}
+                <a href="/boats/{{ page + 1 }}" class="pagination_button"> > </a>
+            {% endif %}
+            {% if page < total_pages - 1 %}
+                <a href="/boats/{{ page + 2 }}" class="pagination_button"> >> </a>
+            {% endif %}
         </div>
     </div>
 

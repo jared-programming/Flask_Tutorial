@@ -14,7 +14,7 @@ header li {
 }
 
 .topBar{
-  background-color: #faf9f7;
+  background-color: #E3F2FD; /* Light blue */
   display:flex;
   justify-content: space-between;
   align-items:center;
@@ -31,6 +31,7 @@ header li {
   border: none;
   border-radius: 5px;
   margin-left: 10px;
+  background-color: #FFFFFF;
 }
 
 .mainDiv {
@@ -45,7 +46,7 @@ h1{
 
 header a{
   text-decoration:none;
-  color:black;
+  color: #1976D2; /* Blue */
 }
 
 /* FOOTER */
@@ -64,7 +65,7 @@ body {
   display: grid;
   grid-template-rows: auto 1fr auto;
   font-size: 14px;
-  background-color: #f4f4f4;
+  background-color: #FFF8E1; /* Light cream */
   align-items: start;
   min-height: 100vh;
 }
@@ -74,7 +75,7 @@ body {
   flex-flow: row wrap;
   padding: 30px 30px 20px 30px;
   color: #2f2f2f;
-  background-color: #fff;
+  background-color: #F1F8E9; /* Light green */
   border-top: 1px solid #e5e5e5;
 }
 
