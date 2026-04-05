@@ -75,7 +75,23 @@ def get_boats(page=1):
     
     boats = conn.execute(text(f"{base_query} LIMIT {per_page} OFFSET {(page - 1) * per_page}"), params).all()
     print(boats)
-    return render_template('boats.html', boats=boats, page=page, per_page=per_page, total_pages=total_pages, q=q, type=type_filter, min_price=min_price, max_price=max_price, types=types, sort=sort)
+    
+    # Price range configuration
+    price_config = {
+        'min': 0,
+        'max': 400,
+        'step': 10
+    }
+    
+    # Sort options
+    sort_options = [
+        {'value': 'id', 'label': 'ID'},
+        {'value': 'name', 'label': 'Name'},
+        {'value': 'price', 'label': 'Price'},
+        {'value': 'owner_id', 'label': 'Owner ID'}
+    ]
+    
+    return render_template('boats.html', boats=boats, page=page, per_page=per_page, total_pages=total_pages, q=q, type=type_filter, min_price=min_price, max_price=max_price, types=types, sort=sort, price_config=price_config, sort_options=sort_options)
 
 
 @app.route('/boat/<int:id>')
@@ -125,6 +141,24 @@ def delete_boat():
         error = e.orig.args[1]
         print(error)
         return render_template('boats_delete.html', error=error, success=None)
+
+@app.route('/update', methods=['GET'])
+def update_get_request():
+    return render_template('boats_update.html')
+
+@app.route('/update', methods=['POST'])
+def update_boat():
+    try:
+        conn.execute(
+            text("UPDATE boats SET name = :name, type = :type, owner_id = :owner_id, rental_price = :rental_price WHERE id = :id"),
+            request.form
+        )
+        return render_template('boats_update.html', error=None, success="Data updated successfully!")
+    except Exception as e:
+        error = e.orig.args[1]
+        print(error)
+        return render_template('boats_update.html', error=error, success=None)
+
 
 
 if __name__ == '__main__':
