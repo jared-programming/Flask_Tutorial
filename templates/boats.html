@@ -16,6 +16,18 @@
         border-radius: 12px;
         box-shadow: 0 8px 18px rgba(255, 141, 161, 0.16);
         height: 140px;
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .boat-link {
+        text-decoration: none;
+        color: inherit;
+        display: block;
+    }
+
+    .boat-link:hover .boat {
+        transform: scale(1.05);
+        box-shadow: 0 12px 24px rgba(255, 141, 161, 0.25);
     }
 
     .pagination_bar {
@@ -167,17 +179,19 @@
 
         <div class="flex-box">
             {% for boat in boats %}
-                <div class="boat">
-                    <ul>
-                        <li>Boat id: {{ boat['id'] }}</li>
+                <a href="/boat/{{ boat['id'] }}" class="boat-link">
+                    <div class="boat">
                         <ul>
-                            <li>Name: {{ boat['name'] }}</li>
-                            <li>Type: {{ boat['type'] }}</li>
-                            <li>Owner ID: {{ boat['owner_id'] }}</li>
-                            <li>Price: {{ boat['rental_price'] }}</li>
+                            <li>Boat id: {{ boat['id'] }}</li>
+                            <ul>
+                                <li>Name: {{ boat['name'] }}</li>
+                                <li>Type: {{ boat['type'] }}</li>
+                                <li>Owner ID: {{ boat['owner_id'] }}</li>
+                                <li>Price: {{ boat['rental_price'] }}</li>
+                            </ul>
                         </ul>
-                    </ul>
-                </div>
+                    </div>
+                </a>
             {% endfor %}
 
             {% if boats | length < 1 %}

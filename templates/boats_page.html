@@ -1,0 +1,151 @@
+{% extends "base.html" %}
+
+{% block title %}{{ boat['name'] }} - Boat Details{% endblock %}
+
+{% block body %}
+<style>
+    .boat-showcase {
+        max-width: 900px;
+        margin: 40px auto;
+        padding: 40px;
+        background: linear-gradient(135deg, rgba(255, 209, 220, 0.3) 0%, rgba(230, 230, 250, 0.3) 50%, rgba(160, 231, 255, 0.3) 100%);
+        border: 2px solid rgba(255, 141, 161, 0.4);
+        border-radius: 20px;
+        box-shadow: 0 15px 35px rgba(255, 141, 161, 0.2);
+        font-family: 'Nunito', sans-serif;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .boat-showcase::before {
+        content: '';
+        position: absolute;
+        top: -50%;
+        left: -50%;
+        width: 200%;
+        height: 200%;
+        background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
+        animation: float 6s ease-in-out infinite;
+    }
+
+    @keyframes float {
+        0%, 100% { transform: translate(-50%, -50%) rotate(0deg); }
+        50% { transform: translate(-50%, -50%) rotate(180deg); }
+    }
+
+    .boat-header {
+        text-align: center;
+        margin-bottom: 40px;
+        position: relative;
+        z-index: 1;
+    }
+
+    .boat-header h1 {
+        color: #4B0082;
+        font-size: 3em;
+        margin: 0;
+        text-shadow: 2px 2px 4px rgba(255, 141, 161, 0.3);
+    }
+
+    .boat-header .boat-type {
+        color: #FF4500;
+        font-size: 1.5em;
+        font-weight: 300;
+        margin-top: 10px;
+    }
+
+    .boat-info-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 30px;
+        position: relative;
+        z-index: 1;
+    }
+
+    .info-card {
+        background: rgba(255, 255, 255, 0.8);
+        padding: 15px;
+        border-radius: 15px;
+        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+        border: 1px solid rgba(255, 141, 161, 0.2);
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .info-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 12px 30px rgba(0, 0, 0, 0.15);
+    }
+
+    .info-card h3 {
+        color: #4B0082;
+        margin: 0 0 10px 0;
+        font-size: 1.3em;
+        border-bottom: 2px solid #FFD1DC;
+        padding-bottom: 10px;
+    }
+
+    .info-card p {
+        margin: 10px 0;
+        font-size: 1.1em;
+        color: #333;
+    }
+
+    .info-card .value {
+        font-weight: 600;
+        color: #FF4500;
+        font-size: 1.2em;
+    }
+
+    .back-button {
+        display: inline-block;
+        margin-top: 40px;
+        padding: 15px 30px;
+        background: linear-gradient(135deg, #DDA0DD 0%, #BA55D3 100%);
+        color: white;
+        text-decoration: none;
+        border-radius: 25px;
+        font-size: 1.2em;
+        font-weight: 600;
+        transition: all 0.3s ease;
+        position: relative;
+        z-index: 1;
+        box-shadow: 0 5px 15px rgba(186, 85, 211, 0.3);
+    }
+
+    .back-button:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 8px 25px rgba(186, 85, 211, 0.4);
+        background: linear-gradient(135deg, #BA55D3 0%, #9932CC 100%);
+    }
+
+    .boat-icon {
+        font-size: 4em;
+        text-align: center;
+        margin-bottom: 20px;
+        opacity: 0.7;
+    }
+</style>
+<div class="boat-showcase">
+    <div class="boat-header">
+        <h1>{{ boat['name'] }}</h1>
+        <div class="boat-type">{{ boat['type'] | title }} Boat</div>
+    </div>
+
+    <div class="boat-info-grid">
+        <div class="info-card">
+            <h3>📋 Basic Information</h3>
+            <p><strong>Boat ID:</strong> <span class="value">{{ boat['id'] }}</span></p>
+            <p><strong>Owner ID:</strong> <span class="value">{{ boat['owner_id'] }}</span></p>
+        </div>
+
+        <div class="info-card">
+            <h3>💰 Rental Details</h3>
+            <p><strong>Price per Day:</strong> <span class="value">${{ boat['rental_price'] }}</span></p>
+        </div>
+    </div>
+
+    <div style="text-align: center;">
+        <a href="/boats" class="back-button">← Back to All Boats</a>
+    </div>
+</div>
+{% endblock %}

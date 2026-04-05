@@ -78,6 +78,14 @@ def get_boats(page=1):
     return render_template('boats.html', boats=boats, page=page, per_page=per_page, total_pages=total_pages, q=q, type=type_filter, min_price=min_price, max_price=max_price, types=types, sort=sort)
 
 
+@app.route('/boat/<int:id>')
+def boat_detail(id):
+    boat = conn.execute(text("SELECT * FROM boats WHERE id = :id"), {'id': id}).first()
+    if not boat:
+        return "Boat not found", 404
+    return render_template('boats_page.html', boat=dict(boat._mapping))
+
+
 @app.route('/create', methods=['GET'])
 def create_get_request():
     return render_template('boats_create.html')
